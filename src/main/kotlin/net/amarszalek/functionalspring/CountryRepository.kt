@@ -7,7 +7,7 @@ import reactor.core.publisher.*
 
 
 @Repository
-class CustomerRepository(private val databaseClient: DatabaseClient) {
+class CountryRepository(private val databaseClient: DatabaseClient) {
 
     fun getAll(): Flux<Country> {
         return databaseClient

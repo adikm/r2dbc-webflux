@@ -17,7 +17,7 @@
 //
 //
 //@WebFluxTest
-//@ContextConfiguration(classes = [Routing::class, FileHandler::class, CustomerRepository::class])
+//@ContextConfiguration(classes = [Routing::class, RequestHandler::class, CountryRepository::class])
 //@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 //class FunctionalSpringApplicationTests {
 //

@@ -8,7 +8,7 @@ import reactor.core.publisher.*
 import java.time.Duration
 
 @Component
-class FileHandler(private val customerRepository: CustomerRepository) {
+class RequestHandler(private val countryRepository: CountryRepository) {
 
     fun import(request: ServerRequest): Mono<ServerResponse> {
         return request.body(BodyExtractors.toMultipartData()).flatMap { parts ->
@@ -21,20 +21,24 @@ class FileHandler(private val customerRepository: CustomerRepository) {
                                 customeString.size > 1 -> {
                                     val country = customeString[1]
                                     val region = customeString[0]
-                                    customerRepository.save(country, region)
+                                    countryRepository.save(country, region)
                                 }
                             }
                         }
                     }.subscribe()
-            ServerResponse.ok().sse().body<Country>(customerRepository.getAll())
+            ServerResponse.ok().sse().body<Country>(countryRepository.getAll())
         }
     }
 
     fun getAll(request: ServerRequest): Mono<ServerResponse> {
-        val countryEverySecond = customerRepository.getAll()
+        val countryEverySecond = countryRepository.getAll()
                 .zipWith(Flux.interval(Duration.ofSeconds(1)))
         return ServerResponse.ok().sse().body<Country>(countryEverySecond.map { it.t1 })
     }
 
-
+    fun getOne(request: ServerRequest): Mono<ServerResponse> {
+        val name = request.pathVariable("name")
+        val country = countryRepository.getOne(name)
+        return ServerResponse.ok().body<Country>(country)
+    }
 }
